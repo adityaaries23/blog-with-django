@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block navbar %}
+    {% include 'navbar.html' with user=user %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto px-4 py-10 max-w-8xl">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ post.title }}</h1>
+            <p class="text-gray-700 leading-relaxed">{{ post.content }}</p>
+            <div class="mt-6 text-gray-500 text-sm">
+                <p><strong>Total Views:</strong> {{ post.views }}</p>
+            </div>
+            {% if user == post.actor %}
+                <div class="mt-6">
+                    <a href="{% url 'updatedPost' post.id %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                        Edit Post
+                    </a>
+                </div>
+                <div class="mt-6">
+                    <form action="{% url 'deletePost' post.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                            Delete post</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

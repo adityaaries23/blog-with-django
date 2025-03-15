@@ -1,0 +1,15 @@
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">MyBlog</a>
+        <div>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}" class="text-gray-600 hover:text-blue-600 px-3">Register</a>
+                <a href="{% url 'login' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Login</a>
+            {% else %}
+                <a href="{% url 'myposts' %}" class="text-gray-600 hover:text-blue-600 px-3">MyPost</a>
+                <a href="{% url 'newpost' %}" class="text-gray-600 hover:text-blue-600 px-3">Crete Post</a>
+                <a href="{% url 'logout' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Logout</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

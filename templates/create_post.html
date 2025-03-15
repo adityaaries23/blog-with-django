@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    New Post
+{% endblock %}
+
+{% block navbar %}
+    {% include 'navbar.html' with user=user %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto px-4 py-10 max-w-3xl">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">
+                {% if post is None %}
+                    Create new post
+                {% else %}
+                    Edit existing post
+                {% endif %}
+            </h1>
+
+            <form method="POST" action="{% if post is None %}
+            	{% url 'myposts' %}
+            	{% else %}
+            	{% url 'post' post.id %}
+            {% endif %}" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Title Input -->
+                <input
+                        type="text"
+                        name="title"
+                        class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter post title..."
+                        value="{{ post.title }}"
+                        required
+                >
+
+                <!-- Content Input -->
+                <textarea
+                        name="content"
+                        class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-48 resize-none"
+                        placeholder="Write your content here..."
+                        required
+                >{{ post.content }}</textarea>
+
+                <!-- Submit Button -->
+                <button
+                        type="submit"
+                        name="submit"
+                        value="submit"
+                        class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                    Publish Post
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
