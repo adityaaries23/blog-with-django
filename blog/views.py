@@ -1,31 +1,37 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import ListView, DetailView
 
 from blog.models import Post
 from core.utils import custom_404
 
 
-# Create your views here
-class HomePageView(View):
-    def get(self, request):
-        user = request.user
-        posts = Post.objects.all().order_by('-created_at')
-        context = {
-            'posts': posts,
-            'user': user,
-        }
-        return render(request, 'home.html', context)
+class HomePageListView(ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'home.html'
+    paginate_by = 5
+    ordering = ['-created_at']
+
+    def get_context_data(
+            self, *, object_list=..., **kwargs
+    ):
+        context = super(HomePageListView, self).get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
+class PostDetailView(DetailView):
+    model = Post
+    context_object_name = 'post'
+    template_name = 'post.html'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    def get_context_data(self, **kwargs):
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
 class PostView(View):
-    def get(self, request, id):
-        try:
-            posts = Post.objects.get(id=id)
-            posts.views += 1
-            posts.save()
-        except Post.DoesNotExist:
-            return custom_404(request)
-
-        return render(request, 'post.html', {'post': posts})
-
     def post(self, request, id):
         try:
             title = request.POST['title']
@@ -38,15 +44,23 @@ class PostView(View):
             return custom_404(request)
         return render(request, 'post.html', {'post': post})
 
-class MyPostsView(View):
-    def get(self, request):
-        posts = Post.objects.filter(actor=request.user).order_by('-created_at')
-        context = {
-            'posts': posts,
-            'user': request.user,
-        }
-        return render(request, 'home.html', context)
 
+class MyPostListView(ListView):
+    model = Post
+    context_object_name = 'posts'
+    ordering = ['-created_at']
+    template_name = 'home.html'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return super().get_queryset().filter(actor=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
+class MyPostsView(View):
     def post(self, request):
         user = request.user
         title = request.POST.get('title')
@@ -54,18 +68,20 @@ class MyPostsView(View):
         Post.objects.create(title=title, content=content, actor=user)
         return redirect('myposts')
 
+
 class NewPostView(View):
     def get(self, request):
-        return render(request,'create_post.html')
+        return render(request, 'create_post.html')
 
 
 class UpdatePostView(View):
     def get(self, request, id):
         try:
             post = Post.objects.get(id=id)
-            return render(request,'create_post.html',{'post':post})
+            return render(request, 'create_post.html', {'post': post})
         except Post.DoesNotExist:
             return custom_404(request)
+
 
 class DeletePostView(View):
     def post(self, request, id):
@@ -75,5 +91,3 @@ class DeletePostView(View):
             return redirect('myposts')
         except Post.DoesNotExist:
             return custom_404(request)
-
-
