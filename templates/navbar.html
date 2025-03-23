@@ -1,15 +1,40 @@
 <nav class="bg-white shadow-md">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">MyBlog</a>
-        <div>
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <!-- Left Section: Logo & Search Bar -->
+        <div class="flex items-center gap-x-4 w-1/2">
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">MyBlog</a>
+
+            <!-- Search Bar -->
+            <div class="relative w-full max-w-xs">
+                <input
+                    type="text"
+                    placeholder="Search"
+                    class="w-full p-2 pl-10 bg-gray-100 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M21 21l-4.35-4.35m0 0a7 7 0 1 0-9.9 0 7 7 0 0 0 9.9 0z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Right Section: Links & Buttons -->
+        <div class="flex items-center gap-x-4">
             {% if not user.is_authenticated %}
-                <a href="{% url 'register' %}" class="text-gray-600 hover:text-blue-600 px-3">Register</a>
-                <a href="{% url 'login' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Login</a>
+                <a href="{% url 'register' %}" class="text-gray-600 hover:text-blue-600">Register</a>
+                <a href="{% url 'login' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Login
+                </a>
             {% else %}
-                <a href="{% url 'myposts' %}" class="text-gray-600 hover:text-blue-600 px-3">MyPost</a>
-                <a href="{% url 'newpost' %}" class="text-gray-600 hover:text-blue-600 px-3">Crete Post</a>
-                <a href="{% url 'logout' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Logout</a>
+                <a href="{% url 'myposts' %}" class="text-gray-600 hover:text-blue-600">My Posts</a>
+                <a href="{% url 'newpost' %}" class="text-gray-600 hover:text-blue-600">Create Post</a>
+                <a href="{% url 'logout' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Logout
+                </a>
             {% endif %}
         </div>
+
     </div>
 </nav>

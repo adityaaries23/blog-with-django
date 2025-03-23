@@ -1,7 +1,27 @@
-{% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}" class="btn">Next</a>
-{% endif %}
+<div class="flex justify-center space-x-4 mt-6 pb-2">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" 
+           class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+            ← Previous
+        </a>
+    {% else %}
+        <span class="px-4 py-2 bg-gray-200 text-gray-400 rounded-lg cursor-not-allowed">
+            ← Previous
+        </span>
+    {% endif %}
 
-{% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-{% endif %}
+    <span class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" 
+           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            Next →
+        </a>
+    {% else %}
+        <span class="px-4 py-2 bg-gray-200 text-gray-400 rounded-lg cursor-not-allowed">
+            Next →
+        </span>
+    {% endif %}
+</div>

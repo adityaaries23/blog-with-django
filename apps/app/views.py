@@ -34,8 +34,11 @@ class Login(View):
             password = request.POST.get('password')
             user = authenticate(request, username=username, password=password)
             login(request, user)
-            messages.success(request, "Login successful!")
+            next_page = request.GET.get('next')
+            if next_page:
+                return redirect(next_page)
             return redirect('home')
+
         except Exception as e:
             messages.error(request, "invalid username or password")
             return redirect('login')
@@ -43,5 +46,4 @@ class Login(View):
 class Logout(View):
     def get(self, request):
         logout(request)
-        messages.success(request, "Logout successful!")
         return redirect('home')

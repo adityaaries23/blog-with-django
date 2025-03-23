@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from blog.models import Post
+from apps.blog.models import Post
 from core.utils import custom_404
+from core.views import LoginRequiredMixinView
 
 
 class HomePageListView(ListView):
@@ -29,6 +30,9 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         context['user'] = self.request.user
+        post = self.get_object()
+        post.views += 1
+        post.save()
         return context
 
 class PostView(View):
@@ -45,7 +49,7 @@ class PostView(View):
         return render(request, 'post.html', {'post': post})
 
 
-class MyPostListView(ListView):
+class MyPostListView(LoginRequiredMixinView, ListView):
     model = Post
     context_object_name = 'posts'
     ordering = ['-created_at']
@@ -60,7 +64,7 @@ class MyPostListView(ListView):
         context['user'] = self.request.user
         return context
 
-class MyPostsView(View):
+class MyPostsView(LoginRequiredMixinView, View):
     def post(self, request):
         user = request.user
         title = request.POST.get('title')
@@ -69,12 +73,12 @@ class MyPostsView(View):
         return redirect('myposts')
 
 
-class NewPostView(View):
+class NewPostView(LoginRequiredMixinView, View):
     def get(self, request):
         return render(request, 'create_post.html')
 
 
-class UpdatePostView(View):
+class UpdatePostView(LoginRequiredMixinView, View):
     def get(self, request, id):
         try:
             post = Post.objects.get(id=id)
@@ -83,7 +87,7 @@ class UpdatePostView(View):
             return custom_404(request)
 
 
-class DeletePostView(View):
+class DeletePostView(LoginRequiredMixinView, View):
     def post(self, request, id):
         try:
             post = Post.objects.get(id=id)

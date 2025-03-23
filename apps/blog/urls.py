@@ -1,6 +1,6 @@
 from django.urls import path
 
-from blog.views import HomePageView, PostView, MyPostsView, NewPostView, UpdatePostView, DeletePostView, \
+from apps.blog.views import NewPostView, UpdatePostView, DeletePostView, \
     HomePageListView, PostDetailView, MyPostListView
 
 urlpatterns = [
