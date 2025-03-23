@@ -9,7 +9,9 @@ from django.views import View
 # Create your views here.
 class Register(View):
     def get(self, request):
-        return render(request, 'register.html')
+        next_page = request.GET.get('next')
+        return render(request, 'register.html',context={'next': next_page})
+
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -22,11 +24,15 @@ class Register(View):
         user = User.objects.create_user(username=username, email=email, password=password)
         login(request, user)
         messages.success(request, "Registration successful!")
+        next_page = request.GET.get('next')
+        if next_page:
+            return redirect(next_page)
         return redirect('home')
 
 class Login(View):
     def get(self, request):
-        return render(request, 'login.html')
+        next = request.GET.get('next')
+        return render(request, 'login.html',context={'next': next})
 
     def post(self, request):
         try:

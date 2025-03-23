@@ -11,8 +11,9 @@
     <div class="flex flex-col min-h-screen">
 
         <!-- Scrollable Category Bar -->
-        {% include 'scroll-bar.html' %}
-
+        {% if not me %}
+            {% include 'scroll-bar.html' %}
+        {% endif %}
 
         <!-- Main Content -->
         <main class="flex-grow container mx-auto px-4 py-10">

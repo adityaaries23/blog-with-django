@@ -35,19 +35,6 @@ class PostDetailView(DetailView):
         post.save()
         return context
 
-class PostView(View):
-    def post(self, request, id):
-        try:
-            title = request.POST['title']
-            content = request.POST['content']
-            post = Post.objects.get(id=id)
-            post.title = title
-            post.content = content
-            post.save()
-        except Post.DoesNotExist:
-            return custom_404(request)
-        return render(request, 'post.html', {'post': post})
-
 
 class MyPostListView(LoginRequiredMixinView, ListView):
     model = Post
@@ -62,9 +49,10 @@ class MyPostListView(LoginRequiredMixinView, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+        context['me'] = True
         return context
 
-class MyPostsView(LoginRequiredMixinView, View):
+class CreatePostsView(LoginRequiredMixinView, View):
     def post(self, request):
         user = request.user
         title = request.POST.get('title')
@@ -85,6 +73,18 @@ class UpdatePostView(LoginRequiredMixinView, View):
             return render(request, 'create_post.html', {'post': post})
         except Post.DoesNotExist:
             return custom_404(request)
+
+    def post(self, request, id):
+        try:
+            title = request.POST['title']
+            content = request.POST['content']
+            post = Post.objects.get(id=id)
+            post.title = title
+            post.content = content
+            post.save()
+        except Post.DoesNotExist:
+            return custom_404(request)
+        return render(request, 'post.html', {'post': post})
 
 
 class DeletePostView(LoginRequiredMixinView, View):
