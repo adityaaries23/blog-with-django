@@ -25,7 +25,7 @@ class Register(View):
         login(request, user)
         messages.success(request, "Registration successful!")
         next_page = request.GET.get('next')
-        if next_page:
+        if next_page and next_page != "None":
             return redirect(next_page)
         return redirect('home')
 
@@ -41,7 +41,7 @@ class Login(View):
             user = authenticate(request, username=username, password=password)
             login(request, user)
             next_page = request.GET.get('next')
-            if next_page:
+            if next_page and next_page != "None":
                 return redirect(next_page)
             return redirect('home')
 
