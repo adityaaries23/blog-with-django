@@ -3,6 +3,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView
 
 from apps.blog.models import Post
+from core.task import task_update_count_view
 from core.utils import custom_404
 from core.views import LoginRequiredMixinView
 
@@ -31,8 +32,9 @@ class PostDetailView(DetailView):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         context['user'] = self.request.user
         post = self.get_object()
-        post.views += 1
         post.save()
+
+        task_update_count_view(post.id)
         return context
 
 
